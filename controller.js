@@ -15,6 +15,18 @@ exports.getEndPoints = (req, res, next) => {
 
 exports.getArticlesById = (req, res, next) => {
     const {article_id} = req.params
-    selectArticleById()
-    res.status(200).send()
+    selectArticleById(article_id).then((article) => {
+      
+      try{
+        if(article.length > 0){
+            res.status(200).send({article: article[0]})
+        } else {
+            throw new Error
+        }
+      } catch (error){
+        res.status(413).send({msg: "Request Entity Is Larger Than Data Range"})
+      }
+
+    })
+    .catch(next)
 }

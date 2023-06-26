@@ -36,13 +36,43 @@ describe("nc-news-3", () => {
 })
 
 describe("nc-news-4", () => {
-    test("200 GET the article object that corresponds with the id number in the URL", () => {
+    test("200 GET the article object that corresponds with the id number of 1 in the URL", () => {
         return request(app)
         .get("/api/articles/1")
         .expect(200)
         .then(({ body }) => {
-            
+           
+           expect(typeof body.article).toBe('object');
+           expect(body.article.article_id).toBe(1)
         })
+    })
+    test("200 GET the article object that corresponds with the id number of 4 in the URL", () => {
+        return request(app)
+        .get("/api/articles/4")
+        .expect(200)
+        .then(({ body }) => {
+           expect(typeof body.article).toBe('object');
+           expect(body.article.article_id).toBe(4)
+        })
+    })
+
+    describe('Error Handling', ()=>{
+        test('400 Bad Request. User inputs an id which is not a number this will return a 400 code and an error message', ()=>{
+         return request(app)
+        .get("/api/articles/mitch")
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request Invalid Input");
+        })
+        })
+        test('413 Request Entity Too Large. User inputs an id which is a number but is bigger than current amount of data this will return a 413 code and an error message', ()=>{
+            return request(app)
+           .get("/api/articles/200")
+           .expect(413)
+           .then(({ body }) => {
+               expect(body.msg).toBe("Request Entity Is Larger Than Data Range");
+           })
+           })
     })
 })
 

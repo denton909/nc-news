@@ -6,6 +6,8 @@ exports.selectTopics = (req, res) => {
     })
 }
 
-exports.selectArticleById = (req, res) => {
-    console.log('hi')
+exports.selectArticleById = (id) => {
+    return db.query(`SELECT * FROM articles WHERE article_id = ${id}`).then(({rows})=>{
+        return rows
+    })
 }
