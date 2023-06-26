@@ -5,3 +5,20 @@ exports.selectTopics = (req, res) => {
         return rows
     })
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exports.selectArticleById = (req, res) => {
+    console.log('hi')
+}

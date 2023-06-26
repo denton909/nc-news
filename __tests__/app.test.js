@@ -21,6 +21,7 @@ describe("app test suite", () => {
         })
     })
 })
+
 describe("404 catch all error handling", () => {
     test("404 responds with an error message when passed the wrong endpoint", () => {
         return request(app)
@@ -28,6 +29,17 @@ describe("404 catch all error handling", () => {
         .expect(404)
         .then(({ body }) => {
             expect(body.msg).toBe("Data Not Found");
+        })
+    })
+})
+
+describe("nc-news-4", () => {
+    test("200 GET the article object that corresponds with the id number in the URL", () => {
+        return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+            
         })
     })
 })
