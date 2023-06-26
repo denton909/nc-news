@@ -1,5 +1,5 @@
 const { selectTopics, selectEndPoints } = require("./model")
-
+const endpoints = require("./endpoints.json")
 
 exports.getTopics = (req, res, next) => {
     selectTopics().then((topicsArray)=> {
@@ -9,7 +9,6 @@ exports.getTopics = (req, res, next) => {
 }
 
 exports.getEndPoints = (req, res, next) => {
-    const endPointsObject = selectEndPoints()
-    
-    res.status(200).send({endPoints: endPointsObject})
+     
+    res.status(200).send({endPoints: endpoints})
 }

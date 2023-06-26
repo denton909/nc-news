@@ -7,6 +7,3 @@ exports.selectTopics = (req, res) => {
     })
 }
 
-exports.selectEndPoints = (req, res) => {
-   return endpoints
-}
