@@ -20,6 +20,8 @@ describe("app test suite", () => {
             })
         })
     })
+})
+describe("404 catch all error handling", () => {
     test("404 responds with an error message when passed the wrong endpoint", () => {
         return request(app)
         .get("/api/banana")
