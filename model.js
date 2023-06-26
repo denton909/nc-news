@@ -6,19 +6,6 @@ exports.selectTopics = (req, res) => {
     })
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 exports.selectArticleById = (req, res) => {
     console.log('hi')
 }
