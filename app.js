@@ -1,4 +1,5 @@
 const { getTopics, getEndPoints, getArticlesById  } = require("./controller");
+const express = require('express')
 const app = express();
 
 app.get('/api/topics', getTopics)
