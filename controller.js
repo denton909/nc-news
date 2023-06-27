@@ -1,4 +1,4 @@
-const { selectTopics, selectEndPoints } = require("./model")
+const { selectTopics, selectArticles } = require("./model")
 const endpoints = require("./endpoints.json")
 
 exports.getTopics = (req, res, next) => {
@@ -11,4 +11,18 @@ exports.getTopics = (req, res, next) => {
 exports.getEndPoints = (req, res, next) => {
      
     res.status(200).send({endPoints: endpoints})
+}
+
+
+
+
+
+
+
+
+
+
+
+exports.getArticles = (req, res, next) => {
+    selectArticles()
 }
