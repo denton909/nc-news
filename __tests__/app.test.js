@@ -153,3 +153,12 @@ describe("404 catch all error handling", () => {
     })
 })
 
+describe('nc-news-7', ()=> {
+    xtest('201: Should be able to post a comment object for an article and return that posted comment object', ()=>{
+        return request(app)
+        .post('/api/articles/1/comments')
+        .expect(201)
+        .then(({body}) => {
+        })
+    })
+})
