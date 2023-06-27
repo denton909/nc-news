@@ -111,7 +111,11 @@ describe('nc-news-5', () =>{
         .get('/api/articles')
         .expect(200)
         .then(({body}) => {
-            expect(body.articles[0].created_at).toBe('2020-11-03T09:12:00.000Z')
+            console.log(body.articles)
+            expect(body.articles[0].created_at).toBe('2020-11-03T09:12:00.000Z');
+             expect(body.articles).toBeSortedBy('created_at', {
+                descending: true,
+              });
         })
     })
     test('200: If passed the endpoint of articles it should return with an array of article objects that does not contain the key of body', () => {
