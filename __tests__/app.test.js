@@ -6,6 +6,7 @@ const app = require("../app")
 const endpoints = require("../endpoints.json")
 
 
+
 beforeEach(() => seed(testData));
 afterAll(() => db.end())
 
@@ -142,6 +143,57 @@ describe('nc-news-5', () =>{
    
 })
 
+describe('nc-news-6', () => {
+    test('200: should return an array of comment objects for a given article_id', () => {
+       return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.comments).toHaveLength(11);
+            body.comments.forEach((comment) => {
+                expect(comment).toHaveProperty("comment_id", expect.any(Number));
+                expect(comment).toHaveProperty("votes", expect.any(Number));
+                expect(comment).toHaveProperty("created_at", expect.any(String));
+                expect(comment).toHaveProperty("author", expect.any(String));
+                expect(comment).toHaveProperty("body", expect.any(String));
+                expect(comment).toHaveProperty("article_id", expect.any(Number));
+            })
+        })
+    })
+    test('200: should return an array of comment objects for a given article_id with the most recent comments first ', () => {
+        return request(app)
+         .get('/api/articles/1/comments')
+         .expect(200)
+         .then(({body}) => {
+            console.log(body.comments)
+             expect(body.comments[0].comment_id).toBe(5);
+             expect(body.comments[0].created_at).toBe('2020-11-03T21:00:00.000Z');
+            expect(body.comments).toBeSortedBy('created_at', {
+                descending: true,
+              });
+         })
+     })
+     describe('Error Handling', ()=>{
+        test('400 Bad Request. User inputs an id which is not a number this will return a 400 code and an error message', ()=>{
+         return request(app)
+        .get("/api/articles/mitch/comments")
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request Invalid Input");
+        })
+        })
+        test('Returns 404 when passed valid id that does not exist', ()=>{
+            return request(app)
+           .get("/api/articles/200/comments")
+           .expect(404)
+           .then(({ body }) => {
+               expect(body.msg).toBe("ID Not Found");
+           })
+           })
+    })
+    
+})
+
 describe("404 catch all error handling", () => {
     test("404 responds with an error message when passed the wrong endpoint", () => {
         return request(app)
@@ -152,4 +204,5 @@ describe("404 catch all error handling", () => {
         })
     })
 })
+
 
