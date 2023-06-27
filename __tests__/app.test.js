@@ -89,18 +89,59 @@ describe("nc-news-4", () => {
            })
     })
 })
-
-describe("404 catch all error handling", () => {
-    test("404 responds with an error message when passed the wrong endpoint", () => {
+describe('nc-news-5', () =>{
+    test('200: If passed the endpoint of articles it should return with an array of article objects', () => {
         return request(app)
-        .get("/api/banana")
-        .expect(404)
-        .then(({ body }) => {
-            expect(body.msg).toBe("Data Not Found");
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toHaveLength(13);
+            body.articles.forEach((article) => {
+                expect(article).toHaveProperty("author", expect.any(String));
+                expect(article).toHaveProperty("title", expect.any(String));
+                expect(article).toHaveProperty("article_id", expect.any(Number));
+                expect(article).toHaveProperty("topic", expect.any(String));
+                expect(article).toHaveProperty("created_at", expect.any(String));
+                expect(article).toHaveProperty("votes", expect.any(Number));
+                expect(article).toHaveProperty("article_img_url", expect.any(String));
+            })
         })
     })
+    test('200: If passed the endpoint of articles it should return with an array of article objects in descending order', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            console.log(body.articles)
+            expect(body.articles[0].created_at).toBe('2020-11-03T09:12:00.000Z');
+             expect(body.articles).toBeSortedBy('created_at', {
+                descending: true,
+              });
+        })
+    })
+    test('200: If passed the endpoint of articles it should return with an array of article objects that does not contain the key of body', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            body.articles.forEach((article) => {
+                expect(article).not.toHaveProperty("body");
+            })
+        })
+    })
+    test('200: If passed the endpoint of articles it should return with an array of article objects that includes a key of comment_count which is the total count of all the comments with that articles article id', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles[0].comment_count).toBe('2')
+            body.articles.forEach((article) => {
+            expect(article).toHaveProperty("comment_count", expect.any(String));
+            })
+        })
+    })
+   
 })
-
 
 describe('nc-news-6', () => {
     test('200: should return an array of comment objects for a given article_id', () => {
@@ -152,3 +193,16 @@ describe('nc-news-6', () => {
     })
     
 })
+
+describe("404 catch all error handling", () => {
+    test("404 responds with an error message when passed the wrong endpoint", () => {
+        return request(app)
+        .get("/api/banana")
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Data Not Found");
+        })
+    })
+})
+
+

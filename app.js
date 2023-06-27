@@ -1,10 +1,11 @@
-const { getTopics, getEndPoints, getArticlesById, getComments  } = require("./controller");
-const express = require('express');
+const express = require("express");
+const { getTopics, getEndPoints, getArticles, getArticlesById, getComments } = require("./controller");
 const { handleCustomErrors } = require("./error-handling");
 const app = express();
 
-app.get('/api/topics', getTopics)
 app.get('/api', getEndPoints)
+app.get('/api/topics', getTopics)
+app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id',getArticlesById)
 app.get('/api/articles/:article_id/comments', getComments)
 app.use(handleCustomErrors)
