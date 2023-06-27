@@ -22,7 +22,9 @@ exports.getArticlesById = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-    selectArticles()
+    selectArticles().then((articleArray) => {
+        res.status(200).send({articles: articleArray})
+    })
 }
 
 

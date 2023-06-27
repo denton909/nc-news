@@ -89,26 +89,53 @@ describe("nc-news-4", () => {
     })
 })
 describe('nc-news-5', () =>{
-    xtest('200: If passed the endpoint of articles it should return with an array of article objects', () => {
+    test('200: If passed the endpoint of articles it should return with an array of article objects', () => {
         return request(app)
         .get('/api/articles')
         .expect(200)
         .then(({body}) => {
             expect(body.articles).toHaveLength(13);
-            expect(body.articles[0].created_at).toBe(1604394720000)
             body.articles.forEach((article) => {
                 expect(article).toHaveProperty("author", expect.any(String));
                 expect(article).toHaveProperty("title", expect.any(String));
                 expect(article).toHaveProperty("article_id", expect.any(Number));
                 expect(article).toHaveProperty("topic", expect.any(String));
-                expect(article).toHaveProperty("created_at", expect.any(Number));
+                expect(article).toHaveProperty("created_at", expect.any(String));
                 expect(article).toHaveProperty("votes", expect.any(Number));
                 expect(article).toHaveProperty("article_img_url", expect.any(String));
-                expect(article).toHaveProperty("comment_count", expect.any(Number));
+            })
+        })
+    })
+    test('200: If passed the endpoint of articles it should return with an array of article objects in descending order', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles[0].created_at).toBe('2020-11-03T09:12:00.000Z')
+        })
+    })
+    test('200: If passed the endpoint of articles it should return with an array of article objects that does not contain the key of body', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            body.articles.forEach((article) => {
                 expect(article).not.toHaveProperty("body");
             })
         })
     })
+    test('200: If passed the endpoint of articles it should return with an array of article objects that includes a key of comment_count which is the total count of all the comments with that articles article id', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles[0].comment_count).toBe('2')
+            body.articles.forEach((article) => {
+            expect(article).toHaveProperty("comment_count", expect.any(String));
+            })
+        })
+    })
+   
 })
 
 describe("404 catch all error handling", () => {
