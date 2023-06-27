@@ -65,12 +65,12 @@ describe("nc-news-4", () => {
             expect(body.msg).toBe("Bad Request Invalid Input");
         })
         })
-        test('413 Request Entity Too Large. User inputs an id which is a number but is bigger than current amount of data this will return a 413 code and an error message', ()=>{
+        test('404 Request Not Found. User inputs an id which is a number but is bigger than current amount of data this will return a 404 code and an error message', ()=>{
             return request(app)
            .get("/api/articles/200")
-           .expect(413)
+           .expect(404)
            .then(({ body }) => {
-               expect(body.msg).toBe("Request Entity Is Larger Than Data Range");
+               expect(body.msg).toBe("Request Not Found");
            })
            })
     })
