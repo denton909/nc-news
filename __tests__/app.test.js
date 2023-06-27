@@ -187,7 +187,7 @@ describe('nc-news-6', () => {
            .get("/api/articles/200/comments")
            .expect(404)
            .then(({ body }) => {
-               expect(body.msg).toBe("Request Not Found");
+               expect(body.msg).toBe("ID Not Found");
            })
            })
     })
