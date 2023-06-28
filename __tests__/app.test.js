@@ -5,7 +5,10 @@ const request = require("supertest");
 const app = require("../app")
 const endpoints = require("../endpoints.json")
 
-
+const commentToPost = {
+    username: 'butter_bridge',
+    body: 'This article is great'
+};
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end())
@@ -193,6 +196,63 @@ describe('nc-news-6', () => {
     })
     
 })
+describe('nc-news-7', ()=> {
+    test('201: Should be able to post a comment object for an article and return that posted comment object', ()=>{
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(commentToPost)
+        .expect(201)
+        .then(({body}) => {
+           expect(body).toEqual({article_id: 1, author: 'butter_bridge', body: 'This article is great', comment_id: 19, created_at: body.created_at, votes: 0})
+        })
+    })
+    describe('Error handling', () => {
+        test('400 Bad Request. User inputs an id which is not a number this will return a 400 code and an error message', ()=>{
+            return request(app)
+           .post("/api/articles/mitch/comments")
+           .send(commentToPost)
+           .expect(400)
+           .then(({ body }) => {
+               expect(body.msg).toBe("Bad Request Invalid Input");
+           })
+           })
+        test('400 Bad Request. User inputs an invalid username type this will return a 400 code and an error message', ()=>{
+            const invalidUserNameType = {
+                username: 1,
+                body: 'This article is great'
+            };
+            return request(app)
+           .post("/api/articles/1/comments")
+           .send(invalidUserNameType)
+           .expect(400)
+           .then(({ body }) => {
+               expect(body.msg).toBe("Bad Request Invalid Username Type");
+           })
+           })
+        test('Returns 404 when passed valid id that does not exist', ()=>{
+               return request(app)
+              .post("/api/articles/200/comments")
+              .send(commentToPost)
+              .expect(404)
+              .then(({ body }) => {
+                  expect(body.msg).toBe("ID Not Found");
+              })
+              })
+        test('Returns 404 when username is not found', ()=>{
+            const invalidUserName = {
+                username: 'Phil',
+                body: 'This article is great'
+            };    
+            return request(app)
+               .post("/api/articles/1/comments")
+               .send(invalidUserName)
+               .expect(404)
+               .then(({ body }) => {
+                   expect(body.msg).toBe("User Not Found");
+               })
+               })
+    })
+})
 
 describe("404 catch all error handling", () => {
     test("404 responds with an error message when passed the wrong endpoint", () => {
@@ -205,12 +265,3 @@ describe("404 catch all error handling", () => {
     })
 })
 
-describe('nc-news-7', ()=> {
-    xtest('201: Should be able to post a comment object for an article and return that posted comment object', ()=>{
-        return request(app)
-        .post('/api/articles/1/comments')
-        .expect(201)
-        .then(({body}) => {
-        })
-    })
-})
