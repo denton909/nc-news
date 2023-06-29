@@ -40,27 +40,16 @@ exports.insertComment = (id, post) => {
         post.body,
         article_id = id
     ]
-    return db.query(`SELECT * FROM articles WHERE article_id = $1 `, [id]).then(({rows})=>{
-        if(!rows.length) {
-                return Promise.reject({status: 404, msg: "ID Not Found"})
-            } else {
-               
-                return db.query(`SELECT * FROM users WHERE username = $1`, [post.username]).then(({rows})=>{
-                    if (typeof post.username !== 'string'){
-                        return Promise.reject({status: 400, msg: "Bad Request Invalid Username Type"})
-                    } else if(!rows.length){
-                        return Promise.reject({status: 404, msg: "User Not Found"})
-                    }
-                    else {
-                        return db.query(`INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *`, comment_details).then(({rows}) => {
-                            return rows[0]
-                        }) 
-                    }
-                })
-                
-            }
-            
-        })
-        
+    
+ return db.query(`INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *`, comment_details).then(({rows}) => {
+        return rows[0]
+        }) 
 }
+                
+                
+          
+            
+     
+        
+
 

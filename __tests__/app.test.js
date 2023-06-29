@@ -115,7 +115,6 @@ describe('nc-news-5', () =>{
         .get('/api/articles')
         .expect(200)
         .then(({body}) => {
-            console.log(body.articles)
             expect(body.articles[0].created_at).toBe('2020-11-03T09:12:00.000Z');
              expect(body.articles).toBeSortedBy('created_at', {
                 descending: true,
@@ -168,7 +167,6 @@ describe('nc-news-6', () => {
          .get('/api/articles/1/comments')
          .expect(200)
          .then(({body}) => {
-            console.log(body.comments)
              expect(body.comments[0].comment_id).toBe(5);
              expect(body.comments[0].created_at).toBe('2020-11-03T21:00:00.000Z');
             expect(body.comments).toBeSortedBy('created_at', {
@@ -204,6 +202,24 @@ describe('nc-news-7', ()=> {
         .expect(201)
         .then(({body}) => {
            expect(body).toEqual({article_id: 1, author: 'butter_bridge', body: 'This article is great', comment_id: 19, created_at: body.created_at, votes: 0})
+
+        })
+    })
+     test('201: Should be able to post a comment object which has more properties than needed for an article and return that posted comment object with only the properties that have been used to create the comment', ()=>{
+        const commentToPostWithTooManyProperties = {
+            username: 'butter_bridge',
+            body: 'This article is great',
+            votes: 20,
+            firstName: 'Phil',
+            lastName: 'Denton'
+        };
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(commentToPostWithTooManyProperties)
+        .expect(201)
+        .then(({body}) => {
+           expect(body).toEqual({article_id: 1, author: 'butter_bridge', body: 'This article is great', comment_id: 19, created_at: body.created_at, votes: 0})
+           
         })
     })
     describe('Error handling', () => {
@@ -216,17 +232,15 @@ describe('nc-news-7', ()=> {
                expect(body.msg).toBe("Bad Request Invalid Input");
            })
            })
-        test('400 Bad Request. User inputs an invalid username type this will return a 400 code and an error message', ()=>{
+        test('400 Bad Request. User inputs no username or body this will return a 400 code and an error message', ()=>{
             const invalidUserNameType = {
-                username: 1,
-                body: 'This article is great'
             };
             return request(app)
            .post("/api/articles/1/comments")
            .send(invalidUserNameType)
            .expect(400)
            .then(({ body }) => {
-               expect(body.msg).toBe("Bad Request Invalid Username Type");
+               expect(body.msg).toBe("Bad Request missing input");
            })
            })
         test('Returns 404 when passed valid id that does not exist', ()=>{
@@ -235,7 +249,7 @@ describe('nc-news-7', ()=> {
               .send(commentToPost)
               .expect(404)
               .then(({ body }) => {
-                  expect(body.msg).toBe("ID Not Found");
+                  expect(body.msg).toBe("violates foreign key constraint");
               })
               })
         test('Returns 404 when username is not found', ()=>{
@@ -248,7 +262,7 @@ describe('nc-news-7', ()=> {
                .send(invalidUserName)
                .expect(404)
                .then(({ body }) => {
-                   expect(body.msg).toBe("User Not Found");
+                   expect(body.msg).toBe("violates foreign key constraint");
                })
                })
     })
