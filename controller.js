@@ -1,4 +1,4 @@
-const { selectTopics,selectArticleById, selectArticles, selectComments, insertComment, removeComment } = require("./model")
+const { selectTopics,selectArticleById, selectArticles, selectComments, insertComment, updateArticle, removeComment } = require("./model")
 const endpoints = require("./endpoints.json")
 
 
@@ -27,6 +27,7 @@ exports.getArticles = (req, res, next) => {
 }
 
 exports.getComments = (req, res, next) => {
+    
     const {article_id} = req.params
     selectComments(article_id).then((commentsArray) => {
         res.status(200).send({comments: commentsArray})
@@ -43,12 +44,14 @@ exports.postComments = (req, res, next) => {
    
 }
 
-
-
-
-
-
-
+exports.postArticleUpdate = (req, res, next) => {
+    const {article_id} = req.params
+    const {inc_votes} = req.body
+    updateArticle(article_id, inc_votes).then((updatedArticle)=>{
+        res.status(201).send(updatedArticle)
+    }).catch(next)
+    
+}
 
 
 exports.deleteComments = (req, res, next) => {
