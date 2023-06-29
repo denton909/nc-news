@@ -1,4 +1,5 @@
 const db = require("./db/connection")
+const comments = require("./db/data/test-data/comments")
 
 
 
@@ -52,4 +53,8 @@ exports.insertComment = (id, post) => {
      
         
 
+exports.removeComment = (id) => {
+   
+    return db.query(`DELETE FROM comments WHERE comment_id = $1 `, [id])
+}
 

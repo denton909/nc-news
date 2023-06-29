@@ -279,3 +279,10 @@ describe("404 catch all error handling", () => {
     })
 })
 
+describe('nc-news-8', ()=>{
+    test.only('should return a 204 status after the restaurant has been deleted', ()=>{
+        return request(app)
+        .delete('/api/comments/1')
+        .expect(204)
+    })
+})
