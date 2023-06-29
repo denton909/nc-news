@@ -54,9 +54,9 @@ exports.updateArticle = (id, votes) => {
         }
         return rows[0].votes + Number(votes)
     })
-    .then((maths) => {
+    .then((updatedTotalOfVotes) => {
     
-        return db.query(`UPDATE articles SET votes= $1 WHERE article_id = $2 RETURNING *`, [maths, id])
+        return db.query(`UPDATE articles SET votes= $1 WHERE article_id = $2 RETURNING *`, [updatedTotalOfVotes, id])
     })
     .then(({rows}) => {
         return rows[0]
