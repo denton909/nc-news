@@ -49,7 +49,7 @@ exports.postArticleUpdate = (req, res, next) => {
     const {inc_votes} = req.body
     updateArticle(article_id, inc_votes).then((updatedArticle)=>{
         res.status(201).send(updatedArticle)
-    })
+    }).catch(next)
     
 }
 

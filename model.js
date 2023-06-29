@@ -1,5 +1,5 @@
 const db = require("./db/connection")
-const users = require("./db/data/test-data/users")
+
 
 
 
@@ -47,8 +47,12 @@ exports.insertComment = (id, post) => {
 }
 
 exports.updateArticle = (id, votes) => {
+    
     return db.query(`SELECT votes FROM articles WHERE article_id = $1`, [id]).then(({rows}) => {
-        return rows[0].votes + votes
+        if(!rows.length) {
+            return Promise.reject({status: 404, msg: "Request Not Found"})
+        }
+        return rows[0].votes + Number(votes)
     })
     .then((maths) => {
     
@@ -57,7 +61,6 @@ exports.updateArticle = (id, votes) => {
     .then(({rows}) => {
         return rows[0]
     })
-
-
+   
 }
 
