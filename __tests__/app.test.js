@@ -268,6 +268,93 @@ describe('nc-news-7', ()=> {
     })
 })
 
+describe("nc-news-8", () => {
+    const updateArticle = {inc_votes: 1}
+    test("201: Should be able to update an article's votes total by the specified number of votes. Return that article object with the updated votes total ",() =>{
+    return request(app)
+    .post('/api/articles/1')
+    .send(updateArticle)
+    .expect(201)
+    .then(({body})=>{
+        expect(body).toEqual({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: body.created_at,
+            votes: 101,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          })
+    })
+    })
+    test("201: Should be able to update an article's votes total by the specified number of votes if the input is a number as string. Return that article object with the updated votes total ",() =>{
+        const updateArticleWithString = {inc_votes: '1'}
+        return request(app)
+        .post('/api/articles/1')
+        .send(updateArticle)
+        .expect(201)
+        .then(({body})=>{
+            expect(body).toEqual({
+                article_id: 1,
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: body.created_at,
+                votes: 101,
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+              })
+        })
+        })
+    describe('Error Handling', () =>{
+        test('400 Bad Request. User inputs an id which is not a number this will return a 400 code and an error message', ()=>{
+            return request(app)
+           .post("/api/articles/mitch")
+           .send(updateArticle)
+           .expect(400)
+           .then(({ body }) => {
+               expect(body.msg).toBe("Bad Request Invalid Input");
+           })
+           })
+        test('Returns 404 when passed valid id that does not exist', () => {
+            return request(app)
+           .post("/api/articles/200")
+           .send(updateArticle)
+           .expect(404)
+           .then(({ body }) => {
+            expect(body.msg).toBe("Request Not Found");
+        })
+           })
+        test('400 Bad Request. User inputs no votes this will return a 400 code and an error message', ()=>{
+            const invalidInput = {
+            };
+            return request(app)
+           .post("/api/articles/1")
+           .send(invalidInput)
+           .expect(400)
+           .then(({ body }) => {
+               expect(body.msg).toBe("Bad Request Invalid Input");
+           })
+           })
+        test('400 Bad Request. User inputs something other than a number for votes this will return a 400 code and an error message', ()=>{
+            const invalidInput = {
+                inc_votes: "mitch"
+            };
+            return request(app)
+           .post("/api/articles/1")
+           .send(invalidInput)
+           .expect(400)
+           .then(({ body }) => {
+               expect(body.msg).toBe("Bad Request Invalid Input");
+           })
+           })
+           
+    })
+})
+
 describe("404 catch all error handling", () => {
     test("404 responds with an error message when passed the wrong endpoint", () => {
         return request(app)
@@ -278,4 +365,6 @@ describe("404 catch all error handling", () => {
         })
     })
 })
+
+
 

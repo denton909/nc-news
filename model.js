@@ -45,11 +45,22 @@ exports.insertComment = (id, post) => {
         return rows[0]
         }) 
 }
-                
-                
-          
-            
-     
-        
 
+exports.updateArticle = (id, votes) => {
+    
+    return db.query(`SELECT votes FROM articles WHERE article_id = $1`, [id]).then(({rows}) => {
+        if(!rows.length) {
+            return Promise.reject({status: 404, msg: "Request Not Found"})
+        }
+        return rows[0].votes + Number(votes)
+    })
+    .then((updatedTotalOfVotes) => {
+    
+        return db.query(`UPDATE articles SET votes= $1 WHERE article_id = $2 RETURNING *`, [updatedTotalOfVotes, id])
+    })
+    .then(({rows}) => {
+        return rows[0]
+    })
+   
+}
 
