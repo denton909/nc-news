@@ -354,18 +354,31 @@ describe("nc-news-8", () => {
            
     })
 })
-
-describe("404 catch all error handling", () => {
-    test("404 responds with an error message when passed the wrong endpoint", () => {
+describe('nc-news-9', ()=>{
+    test('should return a 204 status after the restaurant has been deleted', ()=>{
         return request(app)
-        .get("/api/banana")
-        .expect(404)
-        .then(({ body }) => {
-            expect(body.msg).toBe("Data Not Found");
+        .delete('/api/comments/1')
+        .expect(204)
+    })
+    describe('Error Handling', () => {
+        test('400 Bad Request. User inputs an id which is not a number this will return a 400 code and an error message', ()=>{
+            return request(app)
+           .delete("/api/comments/mitch")
+           .expect(400)
+           .then(({ body }) => {
+               expect(body.msg).toBe("Bad Request Invalid Input");
+           })
+           })
+        test('Returns 404 when passed valid id that does not exist', () => {
+            return request(app)
+           .delete("/api/comments/200")
+           .expect(404)
+           .then(({ body }) => {
+            expect(body.msg).toBe("Request Not Found");
         })
+           })
     })
 })
-
 describe("nc-news-10", () => {
     test('200 GET all users at endpoint of /api/users and return array of all user objects', () => {
         return request(app)
@@ -382,6 +395,18 @@ describe("nc-news-10", () => {
             
         })
     })
+
+describe("404 catch all error handling", () => {
+    test("404 responds with an error message when passed the wrong endpoint", () => {
+        return request(app)
+        .get("/api/banana")
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Data Not Found");
+        })
+    })
+})
+
 
 
 

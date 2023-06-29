@@ -1,5 +1,5 @@
 const express = require("express");
-const { getTopics, getEndPoints, getArticles, getArticlesById, getComments, postArticleUpdate, postComments, getUsers} = require("./controller");
+const { getTopics, getEndPoints, getArticles, getArticlesById, getComments, postArticleUpdate, postComments, deleteComments, getUsers} = require("./controller");
 const { handleCustomErrors, handlePSQLErrors } = require("./error-handling");
 const app = express();
 app.use(express.json())
@@ -11,6 +11,7 @@ app.get('/api/articles/:article_id',getArticlesById)
 app.get('/api/articles/:article_id/comments', getComments)
 app.post('/api/articles/:article_id', postArticleUpdate)
 app.post('/api/articles/:article_id/comments', postComments)
+app.delete('/api/comments/:comment_id', deleteComments)
 app.get('/api/users', getUsers)
 app.use(handlePSQLErrors)
 app.use(handleCustomErrors)

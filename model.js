@@ -4,6 +4,7 @@ const db = require("./db/connection")
 
 
 
+
 exports.selectTopics = (req, res) => {
     return db.query(`SELECT * FROM topics`).then(({rows}) => {
         return rows
@@ -45,7 +46,6 @@ exports.insertComment = (id, post) => {
         return rows[0]
         }) 
 }
-
 exports.updateArticle = (id, votes) => {
     
     return db.query(`SELECT votes FROM articles WHERE article_id = $1`, [id]).then(({rows}) => {
@@ -64,14 +64,18 @@ exports.updateArticle = (id, votes) => {
    
 }
 
+exports.removeComment = (id) => {
+  return db.query('SELECT * FROM comments WHERE comment_id = $1', [id]).then(({rows})=>{
+    if(rows.length === 0){
+        return Promise.reject({status: 404, msg: "Request Not Found"})
+    } else {
+        return db.query(`DELETE FROM comments WHERE comment_id = $1 `, [id])
 
-
-
-
-
-
-
+    }
+  })
+}
 
 exports.selectUsers = () => {
     return db.query(`SELECT * FROM users`)
 }
+
