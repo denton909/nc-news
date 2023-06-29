@@ -227,11 +227,17 @@ describe("nc-news-8", () => {
           })
     })
     })
-    // describe('Error Handling', () =>{
-    //     test("", () => {
-
-    //     })
-    // })
+    xdescribe('Error Handling', () =>{
+        test('400 Bad Request. User inputs an id which is not a number this will return a 400 code and an error message', ()=>{
+            return request(app)
+           .post("/api/articles/mitch")
+           .send(updateArticle)
+           .expect(400)
+           .then(({ body }) => {
+               expect(body.msg).toBe("Bad Request Invalid Input");
+           })
+           })
+    })
 })
 
 

@@ -27,6 +27,7 @@ exports.getArticles = (req, res, next) => {
 }
 
 exports.getComments = (req, res, next) => {
+    
     const {article_id} = req.params
     selectComments(article_id).then((commentsArray) => {
         res.status(200).send({comments: commentsArray})
