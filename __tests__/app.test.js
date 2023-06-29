@@ -379,6 +379,22 @@ describe('nc-news-9', ()=>{
            })
     })
 })
+describe("nc-news-10", () => {
+    test('200 GET all users at endpoint of /api/users and return array of all user objects', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.users).toHaveLength(4);
+            body.users.forEach(user => {
+                expect(user).toHaveProperty("username", expect.any(String));
+                expect(user).toHaveProperty("name", expect.any(String));
+                expect(user).toHaveProperty("avatar_url", expect.any(String));
+            })
+            })
+            
+        })
+    })
 
 describe("404 catch all error handling", () => {
     test("404 responds with an error message when passed the wrong endpoint", () => {
@@ -390,4 +406,8 @@ describe("404 catch all error handling", () => {
         })
     })
 })
+
+
+
+
 
