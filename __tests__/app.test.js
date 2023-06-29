@@ -366,5 +366,23 @@ describe("404 catch all error handling", () => {
     })
 })
 
+describe("nc-news-10", () => {
+    test('200 GET all users at endpoint of /api/users and return array of all user objects', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.users).toHaveLength(4);
+            body.users.forEach(user => {
+                expect(user).toHaveProperty("username", expect.any(String));
+                expect(user).toHaveProperty("name", expect.any(String));
+                expect(user).toHaveProperty("avatar_url", expect.any(String));
+            })
+            })
+            
+        })
+    })
+
+
 
 

@@ -64,3 +64,14 @@ exports.updateArticle = (id, votes) => {
    
 }
 
+
+
+
+
+
+
+
+
+exports.selectUsers = () => {
+    return db.query(`SELECT * FROM users`)
+}
