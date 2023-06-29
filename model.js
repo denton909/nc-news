@@ -32,3 +32,22 @@ exports.selectComments = (id) => {
 }
 
 
+
+
+
+
+exports.updateArticle = (id, votes) => {
+    return db.query(`SELECT votes FROM articles WHERE article_id = $1`, [id]).then(({rows}) => {
+        return rows[0].votes + votes
+    })
+    .then((maths) => {
+    
+        return db.query(`UPDATE articles SET votes= $1 WHERE article_id = $2 RETURNING *`, [maths, id])
+    })
+    .then(({rows}) => {
+        return rows[0]
+    })
+
+
+}
+

@@ -205,4 +205,33 @@ describe("404 catch all error handling", () => {
     })
 })
 
+describe("nc-news-8", () => {
+    const updateArticle = {inc_votes: 1}
+    test("201: Should be able to update an article's votes total by the specified number of votes. Return that article object with the updated votes total ",() =>{
+    return request(app)
+    .post('/api/articles/1')
+    .send(updateArticle)
+    .expect(201)
+    .then(({body})=>{
+        console.log(body)
+        expect(body).toEqual({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: body.created_at,
+            votes: 101,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          })
+    })
+    })
+    // describe('Error Handling', () =>{
+    //     test("", () => {
+
+    //     })
+    // })
+})
+
 
