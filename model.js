@@ -1,4 +1,7 @@
 const db = require("./db/connection")
+const users = require("./db/data/test-data/users")
+
+
 
 
 exports.selectTopics = (req, res) => {
@@ -30,5 +33,23 @@ exports.selectComments = (id) => {
     })
     
 }
+
+exports.insertComment = (id, post) => {
+    const comment_details = [
+        post.username,
+        post.body,
+        article_id = id
+    ]
+    
+ return db.query(`INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *`, comment_details).then(({rows}) => {
+        return rows[0]
+        }) 
+}
+                
+                
+          
+            
+     
+        
 
 
