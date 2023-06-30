@@ -1,24 +1,22 @@
 const db = require("./db/connection")
 
-
-
-
-
-
-exports.selectTopics = (req, res) => {
+exports.selectTopics = () => {
     return db.query(`SELECT * FROM topics`).then(({rows}) => {
         return rows
     })
 }
 
 exports.selectArticleById = (id) => {
-    return db.query(`SELECT * FROM articles WHERE article_id = $1`, [id]).then(({rows})=>{
+      
+    return db.query(`SELECT articles.article_id, articles.body, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id`, [id]).then(({rows})=>{
         if(!rows.length) {
             return Promise.reject({status: 404, msg: "Request Not Found"})
         }
         return rows
     })
 }
+
+
 exports.selectArticles = (searchByTopic = undefined, sortBy = 'created_at', orderBy = 'DESC') => {
     const sortByArray = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_img_url']
     const orderByArray = ['ASC', 'DESC']
