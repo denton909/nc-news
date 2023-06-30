@@ -272,7 +272,7 @@ describe("nc-news-8", () => {
     const updateArticle = {inc_votes: 1}
     test("201: Should be able to update an article's votes total by the specified number of votes. Return that article object with the updated votes total ",() =>{
     return request(app)
-    .post('/api/articles/1')
+    .patch('/api/articles/1')
     .send(updateArticle)
     .expect(201)
     .then(({body})=>{
@@ -292,7 +292,7 @@ describe("nc-news-8", () => {
     test("201: Should be able to update an article's votes total by the specified number of votes if the input is a number as string. Return that article object with the updated votes total ",() =>{
         const updateArticleWithString = {inc_votes: '1'}
         return request(app)
-        .post('/api/articles/1')
+        .patch('/api/articles/1')
         .send(updateArticle)
         .expect(201)
         .then(({body})=>{
@@ -312,7 +312,7 @@ describe("nc-news-8", () => {
     describe('Error Handling', () =>{
         test('400 Bad Request. User inputs an id which is not a number this will return a 400 code and an error message', ()=>{
             return request(app)
-           .post("/api/articles/mitch")
+           .patch("/api/articles/mitch")
            .send(updateArticle)
            .expect(400)
            .then(({ body }) => {
@@ -321,7 +321,7 @@ describe("nc-news-8", () => {
            })
         test('Returns 404 when passed valid id that does not exist', () => {
             return request(app)
-           .post("/api/articles/200")
+           .patch("/api/articles/200")
            .send(updateArticle)
            .expect(404)
            .then(({ body }) => {
@@ -332,7 +332,7 @@ describe("nc-news-8", () => {
             const invalidInput = {
             };
             return request(app)
-           .post("/api/articles/1")
+           .patch("/api/articles/1")
            .send(invalidInput)
            .expect(400)
            .then(({ body }) => {
@@ -344,7 +344,7 @@ describe("nc-news-8", () => {
                 inc_votes: "mitch"
             };
             return request(app)
-           .post("/api/articles/1")
+           .patch("/api/articles/1")
            .send(invalidInput)
            .expect(400)
            .then(({ body }) => {
@@ -396,6 +396,80 @@ describe("nc-news-10", () => {
         })
     })
 
+describe("nc-news-11", ()=>{
+        test('200: Should filter the returned articles array by the chosen topic', ()=>{
+            return request(app)
+            .get('/api/articles?topic=cats')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toHaveLength(1)
+                expect(body.articles[0]).toEqual({article_id: 5, title: 'UNCOVERED: catspiracy to bring down democracy', topic: 'cats', author: 'rogersop', created_at: body.articles[0].created_at, votes: 0, article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700', comment_count: '2'})
+            })
+        })
+        test('200: Should sort articles by selected column', ()=>{
+            return request(app)
+            .get('/api/articles?sortBy=article_id')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toHaveLength(13)
+                expect(body.articles).toBeSortedBy('article_id', {
+                    descending: true,
+                  });
+                
+            })
+        })
+        test('200: Should order the returned articles in asc order', ()=>{
+            return request(app)
+            .get('/api/articles?sortBy=article_id&orderBy=ASC')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toHaveLength(13)
+                expect(body.articles).toBeSortedBy('article_id', {
+                    ascending: true,
+                  });
+                
+            })
+        })
+        test('200: Should return an empty array is passed a valid topic query but has no articles ', ()=>{
+            return request(app)
+            .get('/api/articles?topic=paper')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toHaveLength(0)
+                expect(body.articles).toEqual([]);
+                
+            })
+        })
+        describe("Error Handling", () => {
+            test('404 Not Found if a topic to filter by does not exist in the topics data', () => {
+               return request(app)
+               .get('/api/articles?topic=shoe')
+               .expect(404)
+               .then(({body})=>{
+                expect(body.msg).toEqual('Request Not Found')
+            
+               })
+            })
+            test('400 Bad Request if column to sortBy does not exist', () => {
+                return request(app)
+                .get('/api/articles?sortBy=shoe')
+                .expect(400)
+                .then(({body})=>{
+                 expect(body.msg).toEqual('Bad Request Not A Valid Column')
+             
+                })
+             })
+            test('400 Bad Request if a try to order data by something other than ASC or DESC', () => {
+                return request(app)
+                .get('/api/articles?sortBy=shoe&orderBy=shoe')
+                .expect(400)
+                .then(({body})=>{
+                 expect(body.msg).toEqual('Bad Request Not A Valid Order By Request')
+                })
+             })
+        })
+    })
+
 describe("404 catch all error handling", () => {
     test("404 responds with an error message when passed the wrong endpoint", () => {
         return request(app)
@@ -406,6 +480,7 @@ describe("404 catch all error handling", () => {
         })
     })
 })
+
 
 
 
