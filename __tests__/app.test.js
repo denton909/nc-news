@@ -396,6 +396,78 @@ describe("nc-news-10", () => {
         })
     })
 
+describe("nc-news-11", ()=>{
+        test('200: Should filter the returned articles array by the chosen topic', ()=>{
+            return request(app)
+            .get('/api/articles?topic=cats')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toHaveLength(1)
+                expect(body.articles[0]).toEqual({article_id: 5, title: 'UNCOVERED: catspiracy to bring down democracy', topic: 'cats', author: 'rogersop', created_at: body.articles[0].created_at, votes: 0, article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700', comment_count: '2'})
+            })
+        })
+        test('200: Should sort articles by selected column', ()=>{
+            return request(app)
+            .get('/api/articles?sortBy=article_id')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toHaveLength(13)
+                expect(body.articles).toBeSortedBy('article_id', {
+                    descending: true,
+                  });
+                
+            })
+        })
+        test('200: Should order the returned articles in asc order', ()=>{
+            return request(app)
+            .get('/api/articles?sortBy=article_id&orderBy=ASC')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toHaveLength(13)
+                expect(body.articles).toBeSortedBy('article_id', {
+                    ascending: true,
+                  });
+                
+            })
+        })
+        describe("Error Handling", () => {
+            test('404 Not Found if a topic to filter by does not exist in the topics data', () => {
+               return request(app)
+               .get('/api/articles?topic=shoe')
+               .expect(404)
+               .then(({body})=>{
+                expect(body.msg).toEqual('Request Not Found')
+            
+               })
+            })
+            test('400 Bad Request if a topic to filter by does not exist in the topics data', () => {
+                return request(app)
+                .get('/api/articles?sortBy=shoe')
+                .expect(400)
+                .then(({body})=>{
+                 expect(body.msg).toEqual('Bad Request Not A Valid Column')
+             
+                })
+             })
+            test('400 Bad Request if a try to order data by something other than ASC or DESC', () => {
+                return request(app)
+                .get('/api/articles?sortBy=shoe&orderBy=shoe')
+                .expect(400)
+                .then(({body})=>{
+                 expect(body.msg).toEqual('Bad Request Not A Valid Order By Request')
+                })
+             })
+            test('400 Bad Request if a try to order data by something other than ASC or DESC', () => {
+                return request(app)
+                .get('/api/articles?sortBy=article_id&orderBy=shoe')
+                .expect(400)
+                .then(({body})=>{
+                 expect(body.msg).toEqual('Bad Request Not A Valid Order By Request')
+                })
+             })
+        })
+    })
+
 describe("404 catch all error handling", () => {
     test("404 responds with an error message when passed the wrong endpoint", () => {
         return request(app)
@@ -407,77 +479,6 @@ describe("404 catch all error handling", () => {
     })
 })
 
-describe("nc-news-11", ()=>{
-    test('200: Should filter the returned articles array by the chosen topic', ()=>{
-        return request(app)
-        .get('/api/articles?topic=cats')
-        .expect(200)
-        .then(({body})=>{
-            expect(body.articles).toHaveLength(1)
-            expect(body.articles[0]).toEqual({article_id: 5, title: 'UNCOVERED: catspiracy to bring down democracy', topic: 'cats', author: 'rogersop', created_at: body.articles[0].created_at, votes: 0, article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700', comment_count: '2'})
-        })
-    })
-    test('200: Should sort articles by selected column', ()=>{
-        return request(app)
-        .get('/api/articles?sortBy=article_id')
-        .expect(200)
-        .then(({body})=>{
-            expect(body.articles).toHaveLength(13)
-            expect(body.articles).toBeSortedBy('article_id', {
-                descending: true,
-              });
-            
-        })
-    })
-    test('200: Should order the returned articles in asc order', ()=>{
-        return request(app)
-        .get('/api/articles?sortBy=article_id&orderBy=ASC')
-        .expect(200)
-        .then(({body})=>{
-            expect(body.articles).toHaveLength(13)
-            expect(body.articles).toBeSortedBy('article_id', {
-                ascending: true,
-              });
-            
-        })
-    })
-    describe("Error Handling", () => {
-        test('404 Not Found if a topic to filter by does not exist in the topics data', () => {
-           return request(app)
-           .get('/api/articles?topic=shoe')
-           .expect(404)
-           .then(({body})=>{
-            expect(body.msg).toEqual('Request Not Found')
-        
-           })
-        })
-        test('400 Bad Request if a topic to filter by does not exist in the topics data', () => {
-            return request(app)
-            .get('/api/articles?sortBy=shoe')
-            .expect(400)
-            .then(({body})=>{
-             expect(body.msg).toEqual('Bad Request Not A Valid Column')
-         
-            })
-         })
-        test('400 Bad Request if a try to order data by something other than ASC or DESC', () => {
-            return request(app)
-            .get('/api/articles?sortBy=shoe&orderBy=shoe')
-            .expect(400)
-            .then(({body})=>{
-             expect(body.msg).toEqual('Bad Request Not A Valid Order By Request')
-            })
-         })
-        test('400 Bad Request if a try to order data by something other than ASC or DESC', () => {
-            return request(app)
-            .get('/api/articles?sortBy=article_id&orderBy=shoe')
-            .expect(400)
-            .then(({body})=>{
-             expect(body.msg).toEqual('Bad Request Not A Valid Order By Request')
-            })
-         })
-    })
-})
 
 
 
