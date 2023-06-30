@@ -471,7 +471,7 @@ describe("nc-news-11", ()=>{
     })
 
 describe('nc-news-12', () => {
-    test("200 GET the article object that corresponds with the id number of 1 in the URL", () => {
+    test("200 GET the article object that corresponds with the id number of 1 in the URL and has a comment count for that article", () => {
         return request(app)
         .get("/api/articles/1")
         .expect(200)
