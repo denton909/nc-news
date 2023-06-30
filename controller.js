@@ -21,9 +21,11 @@ exports.getArticlesById = (req, res, next) => {
     .catch(next)
 }
 exports.getArticles = (req, res, next) => {
-    selectArticles().then((articleArray) => {
+    const { topic, sortBy, orderBy } = req.query
+
+    selectArticles(topic, sortBy, orderBy).then((articleArray) => {
         res.status(200).send({articles: articleArray})
-    })
+    }).catch(next)
 }
 
 exports.getComments = (req, res, next) => {
