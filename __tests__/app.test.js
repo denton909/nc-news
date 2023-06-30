@@ -440,7 +440,7 @@ describe("nc-news-11", ()=>{
             
                })
             })
-            test('400 Bad Request if a topic to filter by does not exist in the topics data', () => {
+            test('400 Bad Request if column to sortBy does not exist', () => {
                 return request(app)
                 .get('/api/articles?sortBy=shoe')
                 .expect(400)
@@ -452,14 +452,6 @@ describe("nc-news-11", ()=>{
             test('400 Bad Request if a try to order data by something other than ASC or DESC', () => {
                 return request(app)
                 .get('/api/articles?sortBy=shoe&orderBy=shoe')
-                .expect(400)
-                .then(({body})=>{
-                 expect(body.msg).toEqual('Bad Request Not A Valid Order By Request')
-                })
-             })
-            test('400 Bad Request if a try to order data by something other than ASC or DESC', () => {
-                return request(app)
-                .get('/api/articles?sortBy=article_id&orderBy=shoe')
                 .expect(400)
                 .then(({body})=>{
                  expect(body.msg).toEqual('Bad Request Not A Valid Order By Request')
