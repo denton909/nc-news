@@ -20,6 +20,7 @@ exports.getArticlesById = (req, res, next) => {
     })
     .catch(next)
 }
+
 exports.getArticles = (req, res, next) => {
     const { topic, sortBy, orderBy } = req.query
 
