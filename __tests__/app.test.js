@@ -430,6 +430,16 @@ describe("nc-news-11", ()=>{
                 
             })
         })
+        test('200: Should return an empty array is passed a valid topic query but has no articles ', ()=>{
+            return request(app)
+            .get('/api/articles?topic=paper')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toHaveLength(0)
+                expect(body.articles).toEqual([]);
+                
+            })
+        })
         describe("Error Handling", () => {
             test('404 Not Found if a topic to filter by does not exist in the topics data', () => {
                return request(app)

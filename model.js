@@ -19,13 +19,20 @@ exports.selectArticleById = (id) => {
         return rows
     })
 }
-exports.selectArticles = (searchByTopic, sortBy = 'created_at', orderBy = 'DESC') => {
+exports.selectArticles = (searchByTopic = undefined, sortBy = 'created_at', orderBy = 'DESC') => {
+    const sortByArray = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_img_url']
+    const orderByArray = ['ASC', 'DESC']
     const queryValues = []
     let queryStr = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`
-    if(searchByTopic){
-        queryValues.push(searchByTopic)
-        queryStr += ` WHERE articles.topic = $1`  
+    
+   if(searchByTopic === undefined){
+    if(!sortByArray.includes(sortBy)) {
+        sortBy = undefined
     }
+    if(!orderByArray.includes(orderBy)){
+        orderBy = undefined
+    }
+   
     queryStr += ` GROUP BY articles.article_id ORDER BY ${sortBy} ${orderBy}`    
     return db.query(queryStr, queryValues).then(({rows}) => {
        if(!rows.length){
@@ -34,6 +41,41 @@ exports.selectArticles = (searchByTopic, sortBy = 'created_at', orderBy = 'DESC'
            return rows
        }
     })
+    } else if (searchByTopic){
+        return db.query(`SELECT * FROM topics WHERE slug = $1`, [searchByTopic]).then(({rows})=>{
+            if(rows.length > 0){
+                queryValues.push(searchByTopic)
+                queryStr += ` WHERE articles.topic = $1`
+                queryStr += ` GROUP BY articles.article_id ORDER BY ${sortBy} ${orderBy}`
+                return db.query(queryStr, queryValues).then(({rows}) => {
+                      return rows
+                    })
+            } else {
+                return Promise.reject({status: 404, msg: "Request Not Found"})
+            }
+        })
+    } else {
+        return Promise.reject({status: 404, msg: "Request Not Found"})
+    }
+    
+    
+
+
+
+    // const queryValues = []
+    // let queryStr = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`
+    // if(searchByTopic){
+    //     queryValues.push(searchByTopic)
+    //     queryStr += ` WHERE articles.topic = $1`  
+    // }
+    // queryStr += ` GROUP BY articles.article_id ORDER BY ${sortBy} ${orderBy}`    
+    // return db.query(queryStr, queryValues).then(({rows}) => {
+    //    if(!rows.length){
+    //     return Promise.reject({status: 404, msg: "Request Not Found"})
+    //    } else {
+    //        return rows
+    //    }
+    // })
 }
 
 exports.selectComments = (id) => {
