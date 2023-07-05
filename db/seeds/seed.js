@@ -7,6 +7,7 @@ const {
 } = require('./utils');
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
+  
   return db
     .query(`DROP TABLE IF EXISTS comments;`)
     .then(() => {
@@ -19,6 +20,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       return db.query(`DROP TABLE IF EXISTS topics;`);
     })
     .then(() => {
+      
       const topicsTablePromise = db.query(`
       CREATE TABLE topics (
         slug VARCHAR PRIMARY KEY,
