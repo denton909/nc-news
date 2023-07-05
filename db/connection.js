@@ -5,7 +5,7 @@ const config = {}
 if(ENV === 'production') {
   config.connectionString = 'postgres://kwwjvupy:FhodIAQCKlBTiPAiQqX4TXBRI9ncrl7S@tyke.db.elephantsql.com/kwwjvupy'
   config.max = 2;
-  console.log(config)
+  
 }
 
 
@@ -19,4 +19,3 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
 
 module.exports = new Pool(config);
 
-// process.env.DATABASE_URL;
